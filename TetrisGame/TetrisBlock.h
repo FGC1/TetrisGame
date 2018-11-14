@@ -23,6 +23,7 @@ private:
 
 private:
 	static int *pSrcBlocks;	// 方块矩阵库
+	enum Color{black, blue, green, 浅绿色, red, purple, yellow, white, gray, 淡蓝色, 淡绿色, 浅淡绿色, 淡红色, 淡紫色, 淡黄色, 亮白色};
 
 private:
 	BLOCK *pBlock;			// 当前方块结
@@ -35,9 +36,12 @@ public:
 	void printBlock(const BLOCK *pBlock = NULL);	// 绘制方块
 	void printNextBlock();							// 绘制下一个方块
 	void gotoXY(int x, int y);						// 使光标移动到指定位置
+	void setTextColor(int iFrColor = Color::black, int iBkColor = Color::purple);	// 设置字体颜色
 	void clearBlock(const BLOCK *pBlock = NULL);	// 清除方块
-	void moveDown(int x = 1);						// 下一x个单元
-
+	void moveDown(int x = 1);						// 将方块下移x个单元
+	void moveLeft(int x = 1);						// 将方块左移x个单元
+	void moveRight(int x = 1);						// 将方块右移x个单元
+	void spin(int x = 1);							// 将方块顺时针旋转x*90度
 	virtual ~TetrisBlock();
 };
 

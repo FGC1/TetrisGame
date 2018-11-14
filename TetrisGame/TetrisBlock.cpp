@@ -106,11 +106,13 @@ void TetrisBlock::printBlock(const BLOCK *pBlock)
 		{
 			if (pBlock->pMatrix[i * pBlock->iWidth + j] == 1)
 			{
+				setTextColor(Color::淡黄色, Color::purple);
 				gotoXY((pBlock->iX + j) * 2, pBlock->iY + i);
 				std::cout << "■";
 			}
 			else
 			{
+				setTextColor(Color::gray, Color::purple);
 				gotoXY((pBlock->iX + j) * 2, pBlock->iY + i);
 				std::cout << "□";
 			}
@@ -145,6 +147,20 @@ void TetrisBlock::gotoXY(int x, int y)
 	SetConsoleCursorPosition(hConsole, { (short)x, (short)y });
 }
 
+// 函数功能：设置字体颜色
+// 函数名称：setTextColor
+// 输入参数：
+//		iFrColor：字体颜色
+//		iBkColor：字体背景颜色
+// 输出参数：
+//		无
+// 完成日期：2018-11-14
+void TetrisBlock::setTextColor(int iFrColor, int iBkColor)
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, iFrColor + iBkColor * 0x10);
+}
+
 // 函数功能：清除方块
 // 函数名称：clearBlock
 // 输入参数：
@@ -164,6 +180,7 @@ void TetrisBlock::clearBlock(const BLOCK * pBlock)
 		{
 			if (pBlock->pMatrix[i * pBlock->iWidth + j] == 1)
 			{
+				setTextColor(Color::gray, Color::purple);
 				gotoXY((pBlock->iX + j) * 2, pBlock->iY + i);
 				std::cout << "□";
 			}
@@ -183,6 +200,49 @@ void TetrisBlock::moveDown(int x)
 {
 	clearBlock();
 	pBlock->iY += x;
+	printBlock();
+}
+
+// 函数功能：将方块向左移动x个单位
+// 函数名称：moveLeft
+// 输入参数：
+//		x：移动距离
+// 输出参数：
+//		无
+// 完成日期：2018-11-14
+void TetrisBlock::moveLeft(int x)
+{
+	clearBlock();
+	pBlock->iX -= x;
+	printBlock();
+}
+
+// 函数功能：将方块向右移动x个单位
+// 函数名称：moveRight
+// 输入参数：
+//		x：移动距离
+// 输出参数：
+//		无
+// 完成日期：2018-11-14
+void TetrisBlock::moveRight(int x)
+{
+	clearBlock();
+	pBlock->iX += x;
+	printBlock();
+}
+
+// 函数功能：将方块顺时针旋转x*90度
+// 函数名称：spin
+// 输入参数：
+//		x：旋转度数/90度
+// 输出参数：
+//		无
+// 完成日期：2018-11-14
+void TetrisBlock::spin(int x)
+{
+	clearBlock();
+	spinBlock();
+	--x ? spin(x) : 0;
 	printBlock();
 }
 
