@@ -13,76 +13,66 @@ int *TetrisBlock::pSrcBlocks = new int [2 * 2 + 5 * 3 * 3 + 4 * 4]{	1, 1, 1, 1,	
 // 完成日期：2018-11-14
 TetrisBlock::TetrisBlock()
 {
-	pBlock = new BLOCK;
-	pNextBlock = new BLOCK;
+	pMatrix = NULL;
 	srand(time(NULL));
-	makeBlock(pBlock);
-	makeBlock(pNextBlock);
+	makeBlock();
 }
 
 // 函数功能：产生一个方块
 // 函数名称：makeBlock
 // 输入参数：
-//		pBlock：方块结构体
+//		无
 // 输出参数：
 //		无
 // 完成日期：2018-11-14
-void TetrisBlock::makeBlock(BLOCK *&pBlock)
+void TetrisBlock::makeBlock()
 {
 	int iOffset = 0;
 
-	if (pBlock == NULL)
-		pBlock = new BLOCK();
-	else
-		delete[] pBlock->pMatrix;
+	iShape = rand() % 7;
+	iDirection = rand() % 4;
 
-	pBlock->iShape = rand() % 7;
-	pBlock->iDirection = rand() % 4;
-
-	switch (pBlock->iShape)
+	switch (iShape)
 	{
 		case 0:
-			pBlock->iWidth = 2;
+			iWidth = 2;
 			iOffset = 0;
 			break;
 		case 1:	case 2:	case 3:	case 4:	case 5:
-			pBlock->iWidth = 3;
-			iOffset = 2 * 2 + (pBlock->iShape - 1) * pBlock->iWidth * pBlock->iWidth;
+			iWidth = 3;
+			iOffset = 2 * 2 + (iShape - 1) * iWidth * iWidth;
 			break;
 		case 6:
-			pBlock->iWidth = 4;
-			iOffset = 2 * 2 + (pBlock->iShape - 1) * 3 * 3;
+			iWidth = 4;
+			iOffset = 2 * 2 + (iShape - 1) * 3 * 3;
 			break;
 		default:
 			break;
 	}
-	pBlock->pMatrix = new int[pBlock->iWidth * pBlock->iWidth];
-	memcpy(pBlock->pMatrix, pSrcBlocks + iOffset, pBlock->iWidth * pBlock->iWidth * sizeof(int));
+	pMatrix = new int[iWidth * iWidth];
+	memcpy(pMatrix, pSrcBlocks + iOffset, iWidth * iWidth * sizeof(int));
 }
 
 // 函数功能：顺时针旋转90°
 // 函数名称：spinBlock
 // 输入参数：
-//		pBlock：方块结构体
+//		无
 // 输出参数：
 //		无
 // 完成日期：2018-11-14
-void TetrisBlock::spinBlock(BLOCK * pBlock)
+void TetrisBlock::spinBlock()
 {
-	// 俄罗斯方块旋转
-	if (pBlock == NULL)
-		pBlock = this->pBlock;
-	int *tmpBlock = new int[pBlock->iWidth * pBlock->iWidth];
-	for (int i = 0; i < pBlock->iWidth; i++)
+	int *tmpBlock = new int[iWidth * iWidth];
+	for (int i = 0; i < iWidth; i++)
 	{
-		for (int j = 0; j < pBlock->iWidth; j++)
+		for (int j = 0; j < iWidth; j++)
 		{
-			int x = pBlock->iWidth - j - 1;
+			int x = iWidth - j - 1;
 			int y = i;
-			tmpBlock[i * pBlock->iWidth + j] = pBlock->pMatrix[x * pBlock->iWidth + y];
+			tmpBlock[i * iWidth + j] = pMatrix[x * iWidth + y];
 		}
 	}
-	memcpy(pBlock->pMatrix, tmpBlock, pBlock->iWidth * pBlock->iWidth * sizeof(int));
+	memcpy(pMatrix, tmpBlock, iWidth * iWidth * sizeof(int));
 	delete[] tmpBlock;
 	
 }
@@ -90,47 +80,31 @@ void TetrisBlock::spinBlock(BLOCK * pBlock)
 // 函数功能：绘制方块
 // 函数名称：printBlock
 // 输入参数：
-//		pBlock：方块结构体
+//		无
 // 输出参数：
 //		无
 // 完成日期：2018-11-14
-void TetrisBlock::printBlock(const BLOCK *pBlock)
+void TetrisBlock::printBlock()
 {
-	if (pBlock == NULL)
-		pBlock = this->pBlock;
-
-	// 打印俄罗斯方块
-	for (int i = 0; i < pBlock->iWidth; i++)
+	for (int i = 0; i < iWidth; i++)
 	{
-		for (int j = 0; j < pBlock->iWidth; j++)
+		for (int j = 0; j < iWidth; j++)
 		{
-			if (pBlock->pMatrix[i * pBlock->iWidth + j] == 1)
+			if (pMatrix[i * iWidth + j] == 1)
 			{
 				setTextColor(Color::淡黄色, Color::purple);
-				gotoXY((pBlock->iX + j) * 2, pBlock->iY + i);
+				gotoXY((iX + j) * 2, iY + i);
 				std::cout << "■";
 			}
 			else
 			{
 				setTextColor(Color::gray, Color::purple);
-				gotoXY((pBlock->iX + j) * 2, pBlock->iY + i);
+				gotoXY((iX + j) * 2, iY + i);
 				std::cout << "□";
 			}
 		}
 	}
 	gotoXY(-1, -1);
-}
-
-// 函数功能：绘制下一个方块
-// 函数名称：printNextBlock
-// 输入参数：
-//		无
-// 输出参数：
-//		无
-// 完成日期：2018-11-14
-void TetrisBlock::printNextBlock()
-{
-	printBlock(this->pNextBlock);
 }
 
 // 函数功能：使光标移动到指定位置
@@ -168,20 +142,16 @@ void TetrisBlock::setTextColor(int iFrColor, int iBkColor)
 // 输出参数：
 //		无
 // 完成日期：2018-11-14
-void TetrisBlock::clearBlock(const BLOCK * pBlock)
+void TetrisBlock::clearBlock()
 {
-	if (pBlock == NULL)
-		pBlock = this->pBlock;
-
-	// 打印俄罗斯方块
-	for (int i = 0; i < pBlock->iWidth; i++)
+	for (int i = 0; i < iWidth; i++)
 	{
-		for (int j = 0; j < pBlock->iWidth; j++)
+		for (int j = 0; j < iWidth; j++)
 		{
-			if (pBlock->pMatrix[i * pBlock->iWidth + j] == 1)
+			if (pMatrix[i * iWidth + j] == 1)
 			{
 				setTextColor(Color::gray, Color::purple);
-				gotoXY((pBlock->iX + j) * 2, pBlock->iY + i);
+				gotoXY((iX + j) * 2, iY + i);
 				std::cout << "□";
 			}
 		}
@@ -199,7 +169,7 @@ void TetrisBlock::clearBlock(const BLOCK * pBlock)
 void TetrisBlock::moveDown(int x)
 {
 	clearBlock();
-	pBlock->iY += x;
+	iY += x;
 	printBlock();
 }
 
@@ -213,7 +183,7 @@ void TetrisBlock::moveDown(int x)
 void TetrisBlock::moveLeft(int x)
 {
 	clearBlock();
-	pBlock->iX -= x;
+	iX -= x;
 	printBlock();
 }
 
@@ -227,7 +197,7 @@ void TetrisBlock::moveLeft(int x)
 void TetrisBlock::moveRight(int x)
 {
 	clearBlock();
-	pBlock->iX += x;
+	iX += x;
 	printBlock();
 }
 
@@ -293,8 +263,5 @@ void TetrisBlock::getFocus()
 
 TetrisBlock::~TetrisBlock()
 {
-	delete[] pBlock->pMatrix;
-	delete[] pNextBlock->pMatrix;
-	delete pBlock;
-	delete pNextBlock;
+	delete[] pMatrix;
 }
