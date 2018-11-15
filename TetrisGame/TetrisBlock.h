@@ -21,12 +21,12 @@ private:
 
 public:
 	TetrisBlock();
-	void makeBlock();					// 产生一个方块
-	void spinBlock();			// 旋转方块
-	void printBlock();	// 绘制方块
+	void makeBlock();								// 产生一个方块
+	void spinBlock();								// 旋转方块
+	void printBlock();								// 绘制方块
 	void gotoXY(int x, int y);						// 使光标移动到指定位置
 	void setTextColor(int iFrColor = Color::black, int iBkColor = Color::purple);	// 设置字体颜色
-	void clearBlock();	// 清除方块
+	void clearBlock();								// 清除方块
 	void moveDown(int x = 1);						// 将方块下移x个单元
 	void moveLeft(int x = 1);						// 将方块左移x个单元
 	void moveRight(int x = 1);						// 将方块右移x个单元
