@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <iostream>
 #include <ctime>
+#include <conio.h>
 
 class TetrisBlock
 {
@@ -42,6 +43,7 @@ public:
 	void moveLeft(int x = 1);						// 将方块左移x个单元
 	void moveRight(int x = 1);						// 将方块右移x个单元
 	void spin(int x = 1);							// 将方块顺时针旋转x*90度
+	void getFocus();								// 获得输入焦点
 	virtual ~TetrisBlock();
 };
 

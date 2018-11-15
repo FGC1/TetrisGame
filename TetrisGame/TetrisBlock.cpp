@@ -246,6 +246,51 @@ void TetrisBlock::spin(int x)
 	printBlock();
 }
 
+// 函数功能：获取输入焦点
+// 函数名称：getLife
+// 输入参数：
+//		无
+// 输出参数：
+//		无
+// 完成日期：2018-11-15
+void TetrisBlock::getFocus()
+{
+	char ch = '\0';
+	while (1)
+	{
+		while (!_kbhit());		// 检测键盘输入
+		ch = _getch();			// 获取键盘输入字符
+		if (ch == -32)
+		{
+			ch = _getch();
+			switch (ch) {
+				case 72:
+					spin();			break;
+				case 75:
+					moveLeft();		break;
+				case 80:
+					moveDown();		break;
+				case 77:
+					moveRight();	break;
+			}
+		}
+		else
+		{
+			switch (ch) {
+				case 'w': case 'W':
+					spin();			break;
+				case 'a':
+					moveLeft();		break;
+				case 's':
+					moveDown();		break;
+				case 'd':
+					moveRight();	break;
+			}
+			if (ch == 'q') break;
+		}
+	}
+}
+
 TetrisBlock::~TetrisBlock()
 {
 	delete[] pBlock->pMatrix;
